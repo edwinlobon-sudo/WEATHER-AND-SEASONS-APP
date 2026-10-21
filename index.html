@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Unit 4CD • Mobile Mastery App</title>
+<style>
+    :root {
+        --bg-dark: #0f172a;
+        --card-bg: #1e293b;
+        --accent-blue: #38bdf8;
+        --accent-purple: #818cf8;
+        --correct: #22c55e;
+        --wrong: #ef4444;
+        --text-light: #f8fafc;
+        --border-color: #334155;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        background-color: var(--bg-dark);
+        color: var(--text-light);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 10px;
+    }
+
+    .main-container {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        overflow: hidden;
+        margin-top: 5px;
+        position: relative;
+    }
+
+    /* HEADER & MOBILE NAVIGATION */
+    .app-header {
+        background: #0f172a;
+        padding: 15px;
+        text-align: center;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .app-header h1 {
+        font-size: 16px;
+        letter-spacing: 1px;
+        color: var(--accent-blue);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .nav-tabs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
+
+    .tab-btn {
+        background: #334155;
+        color: #94a3b8;
+        border: 1.5px solid var(--border-color);
+        padding: 10px 2px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .tab-btn.active {
+        background: var(--accent-blue);
+        color: #0f172a;
+        border-color: var(--accent-blue);
+    }
+
+    /* SECTION CONTAINERS */
+    .section-content {
+        padding: 18px;
+        display: none;
+    }
+
+    .section-content.active {
+        display: block;
+    }
+
+    .card-title {
+        font-size: 14px;
+        color: var(--accent-purple);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        font-weight: 800;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* BUTTONS & UI */
+    .btn-action {
+        background: var(--accent-blue);
+        color: #0f172a;
+        border: none;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        width: 100%;
+        font-size: 14px;
+        margin-top: 15px;
+        text-transform: uppercase;
+    }
+
+    /* OPTION BUTTONS */
+    .options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .opt-btn {
+        background: #0f172a;
+        border: 2px solid var(--border-color);
+        color: var(--text-light);
+        padding: 12px 14px;
+        border-radius: 12px;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .opt-btn.selected {
+        border-color: var(--accent-blue);
+        background: #1e293b;
+    }
+
+    .opt-btn.correct-mark {
+        border-color: var(--correct) !important;
+        background: #14532d !important;
+    }
+
+    .opt-btn.wrong-mark {
+        border-color: var(--wrong) !important;
+        background: #7f1d1d !important;
+    }
+
+    /* GRAMMAR SCRAMBLE */
+    .scramble-box {
+        background: #0f172a;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px dashed var(--accent-blue);
+        color: var(--accent-blue);
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 2px solid var(--border-color);
+        background: #0f172a;
+        color: #fff;
+        font-size: 14px;
+        outline: none;
+    }
+
+    /* VOCABULARY MATCHING GRID */
+    .vocab-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .vocab-card {
+        background: #0f172a;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .vocab-icon {
+        font-size: 42px;
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+
+    .vocab-select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        background: #1e293b;
+        color: #fff;
+        border: 1px solid var(--border-color);
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    /* AUDIO PLAYER */
+    .audio-btn {
+        background: var(--accent-purple);
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .feedback-msg {
+        margin-top: 12px;
+        font-weight: bold;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    /* END SCREEN / CELEBRATION MODAL */
+    .result-screen {
+        text-align: center;
+        padding: 20px 10px;
+    }
+
+    .result-emoji {
+        font-size: 60px;
+        margin-bottom: 10px;
+        animation: pop 0.5s ease-out;
+    }
+
+    .result-score {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--accent-blue);
+        margin-bottom: 10px;
+    }
+
+    .result-text {
+        font-size: 15px;
+        line-height: 1.4;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    @keyframes pop {
+        0% { transform: scale(0); }
+        80% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+</style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- HEADER & TABS -->
+    <div class="app-header">
+        <h1>Unit 4CD • Mastery App</h1>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('mix', event)">⚡ Mix</button>
+            <button class="tab-btn" onclick="switchTab('grammar', event)">✍️ Gram</button>
+            <button class="tab-btn" onclick="switchTab('vocab', event)">🖼️ Vocab</button>
+            <button class="tab-btn" onclick="switchTab('listening', event)">🎧 Listen</button>
+        </div>
+    </div>
+
+    <!-- 1. MIX SECTION -->
+    <div id="mix" class="section-content active">
+        <div id="mix-quiz-body">
+            <div class="card-title">
+                <span>Mixed Challenge</span>
+                <span id="mix-counter">1 / 10</span>
+            </div>
+            <div style="font-size: 15px; font-weight:600;" id="mix-q">Loading...</div>
+            <div class="options-grid" id="mix-opts"></div>
+            <div class="feedback-msg" id="mix-fb"></div>
+            
+            <button class="btn-action" id="mix-check-btn" onclick="checkMixAnswer()">Chequear Respuesta ✓</button>
+            <button class="btn-action" id="mix-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextMix()">Siguiente Pregunta ➔</button>
+        </div>
+    </div>
+
+    <!-- 2. GRAMMAR SECTION (7 Items) -->
+    <div id="grammar" class="section-content">
+        <div id="gram-quiz-body">
+            <div class="card-title">
+                <span>Unscramble Sentences</span>
+                <span id="gram-counter">1 / 7</span>
+            </div>
+            <div class="scramble-box" id="scramble-target">loading...</div>
+            <input type="text" id="grammar-input" placeholder="Type sentence here..." autocomplete="off">
+            <div class="feedback-msg" id="grammar-fb"></div>
+            
+            <button class="btn-action" id="gram-check-btn" onclick="checkGrammar()">Chequear Respuesta ✓</button>
+            <button class="btn-action" id="gram-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextGrammar()">Siguiente Oración ➔</button>
+        </div>
+    </div>
+
+    <!-- 3. VOCABULARY SECTION (Page 1: Weather / Page 2: Seasons) -->
+    <div id="vocab" class="section-content">
+        <div id="vocab-quiz-body">
+            <div class="card-title">
+                <span id="vocab-title">Weather & Temperatures</span>
+                <span id="vocab-page-counter">Page 1 / 2</span>
+            </div>
+            <div class="vocab-grid" id="vocab-container"></div>
+            <div class="feedback-msg" id="vocab-fb"></div>
+            
+            <button class="btn-action" id="vocab-check-btn" onclick="checkVocabPage()">Chequear Todo ✓</button>
+            <button class="btn-action" id="vocab-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextVocabPage()">Next Page ➔</button>
+        </div>
+    </div>
+
+    <!-- 4. LISTENING SECTION (7 Items) -->
+    <div id="listening" class="section-content">
+        <div id="listen-quiz-body">
+            <div class="card-title">
+                <span>Listening Practice</span>
+                <span id="list-counter">1 / 7</span>
+            </div>
+            <button class="audio-btn" onclick="playAudio()">🔊 Escuchar Audio</button>
+            <div style="font-size: 14px; font-weight:600;" id="listen-q">Haz clic en "Escuchar Audio" primero...</div>
+            <div class="options-grid" id="listen-opts"></div>
+            <div class="feedback-msg" id="listen-fb"></div>
+            
+            <button class="btn-action" id="listen-check-btn" onclick="checkListeningAnswer()">Chequear Respuesta ✓</button>
+            <button class="btn-action" id="listen-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextListening()">Siguiente Audio ➔</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // AUDIO SYNTHESIS & SOUND EFFECTS
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.25);
+        } else if (type === 'fanfare') {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.12));
+                g.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.12));
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (i * 0.12) + 0.3);
+                o.start(audioCtx.currentTime + (i * 0.12));
+                o.stop(audioCtx.currentTime + (i * 0.12) + 0.3);
+            });
+        }
+    }
+
+    function switchTab(tabId, evt) {
+        document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        evt.target.classList.add('active');
+    }
+
+    function getFeedbackTemplate(score, total, restartFn) {
+        const percent = (score / total) * 100;
+        let emoji = "";
+        let title = "";
+        let msg = "";
+
+        if (percent >= 75) {
+            emoji = "🎉🥳🎈";
+            title = "CONGRATULATIONS!";
+            msg = "Amazing job! You mastered this challenge with high scores!";
+            playSound('fanfare');
+        } else if (percent >= 50) {
+            emoji = "💪⭐";
+            title = "GOOD EFFORT!";
+            msg = "You passed! Keep practicing to improve your English even more!";
+            playSound('correct');
+        } else {
+            emoji = "🔄📚";
+            title = "KEEP PRACTICING!";
+            msg = "Don't give up! Try again and review the lessons to score higher!";
+            playSound('wrong');
+        }
+
+        return `
+            <div class="result-screen">
+                <div class="result-emoji">${emoji}</div>
+                <div class="result-score">${score} / ${total} (${Math.round(percent)}%)</div>
+                <h3 style="color:#fff; margin-bottom:10px;">${title}</h3>
+                <div class="result-text">${msg}</div>
+                <button class="btn-action" onclick="${restartFn}">Try Challenge Again 🔄</button>
+            </div>
+        `;
+    }
+
+    // --- 1. MIX SECTION ---
+    const mixData = [
+        { q: "It is summer and 35°C outside. What is the weather like?", opts: ["It is cold and snowy.", "It is hot and sunny.", "It is raining."], ans: 1 },
+        { q: "Rain is falling right now. Complete: It _____ raining.", opts: ["is", "are", "am"], ans: 0 },
+        { q: "Carlos _____ wearing a heavy coat because it is freezing.", opts: ["are", "is", "am"], ans: 1 },
+        { q: "What season comes after winter when flowers bloom?", opts: ["Autumn / Fall", "Spring", "Summer"], ans: 1 },
+        { q: "Listen! The students _____ English with the teacher right now.", opts: ["is speaking", "are speaking", "speaks"], ans: 1 },
+        { q: "Look at Maria! _____ is holding an umbrella.", opts: ["He", "She", "They"], ans: 1 },
+        { q: "There is strong wind today. It is very _____.", opts: ["windy", "sunny", "hot"], ans: 0 },
+        { q: "Right now, I _____ (study) for my English exam.", opts: ["am studying", "is studying", "are studying"], ans: 0 },
+        { q: "In winter, people usually wear coats because it is _____.", opts: ["cold", "hot", "sunny"], ans: 0 },
+        { q: "Which pronoun replaces 'Carlos and Sofia'?", opts: ["We", "He", "They"], ans: 2 }
+    ];
+    let mixIdx = 0;
+    let mixScore = 0;
+    let selectedMixOpt = null;
+
+    function loadMix() {
+        const item = mixData[mixIdx];
+        document.getElementById('mix-counter').innerText = `${mixIdx + 1} / ${mixData.length}`;
+        document.getElementById('mix-q').innerText = `${mixIdx + 1}. ${item.q}`;
+        const container = document.getElementById('mix-opts');
+        container.innerHTML = '';
+        document.getElementById('mix-fb').innerText = '';
+        document.getElementById('mix-check-btn').style.display = 'block';
+        document.getElementById('mix-next-btn').style.display = 'none';
+        selectedMixOpt = null;
+
+        item.opts.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerHTML = `<span>${opt}</span><span class="mark"></span>`;
+            btn.onclick = () => {
+                document.querySelectorAll('#mix-opts .opt-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedMixOpt = idx;
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function checkMixAnswer() {
+        if (selectedMixOpt === null) return;
+        const item = mixData[mixIdx];
+        const buttons = document.querySelectorAll('#mix-opts .opt-btn');
+
+        if (selectedMixOpt === item.ans) {
+            buttons[selectedMixOpt].classList.add('correct-mark');
+            buttons[selectedMixOpt].querySelector('.mark').innerText = '✓';
+            playSound('correct');
+            mixScore++;
+            document.getElementById('mix-fb').innerText = 'Correct answer!';
+            document.getElementById('mix-fb').style.color = 'var(--correct)';
+        } else {
+            buttons[selectedMixOpt].classList.add('wrong-mark');
+            buttons[selectedMixOpt].querySelector('.mark').innerText = '✕';
+            buttons[item.ans].classList.add('correct-mark');
+            buttons[item.ans].querySelector('.mark').innerText = '✓';
+            playSound('wrong');
+            document.getElementById('mix-fb').innerText = 'Incorrect answer.';
+            document.getElementById('mix-fb').style.color = 'var(--wrong)';
+        }
+
+        document.getElementById('mix-check-btn').style.display = 'none';
+        document.getElementById('mix-next-btn').style.display = 'block';
+    }
+
+    function nextMix() {
+        mixIdx++;
+        if (mixIdx < mixData.length) {
+            loadMix();
+        } else {
+            document.getElementById('mix-quiz-body').innerHTML = getFeedbackTemplate(mixScore, mixData.length, 'resetMix()');
+        }
+    }
+
+    function resetMix() {
+        mixIdx = 0;
+        mixScore = 0;
+        document.getElementById('mix-quiz-body').innerHTML = `
+            <div class="card-title"><span>Mixed Challenge</span><span id="mix-counter">1 / 10</span></div>
+            <div style="font-size: 15px; font-weight:600;" id="mix-q">Loading...</div>
+            <div class="options-grid" id="mix-opts"></div>
+            <div class="feedback-msg" id="mix-fb"></div>
+            <button class="btn-action" id="mix-check-btn" onclick="checkMixAnswer()">Chequear Respuesta ✓</button>
+            <button class="btn-action" id="mix-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextMix()">Siguiente Pregunta ➔</button>
+        `;
+        loadMix();
+    }
+
+    // --- 2. GRAMMAR SECTION ---
+    const grammarData = [
+        { scramble: "outside / raining / is / It / right / now", correct: "it is raining outside right now" },
+        { scramble: "wearing / She / a / red / jacket / is", correct: "she is wearing a red jacket" },
+        { scramble: "are / They / in / pool / swimming / the", correct: "they are swimming in the pool" },
+        { scramble: "cold / It / freezing / today / and / is", correct: "it is cold and freezing today" },
+        { scramble: "studying / I / English / am / now", correct: "i am studying english now" },
+        { scramble: "snowing / Is / it / in / winter / ?", correct: "is it snowing in winter" },
+        { scramble: "playing / He / soccer / is / sunny / on / days", correct: "he is playing soccer on sunny days" }
+    ];
+    let grammarIdx = 0;
+    let grammarScore = 0;
+
+    function loadGrammar() {
+        document.getElementById('gram-counter').innerText = `${grammarIdx + 1} / ${grammarData.length}`;
+        document.getElementById('scramble-target').innerText = grammarData[grammarIdx].scramble;
+        document.getElementById('grammar-input').value = '';
+        document.getElementById('grammar-fb').innerText = '';
+        document.getElementById('gram-check-btn').style.display = 'block';
+        document.getElementById('gram-next-btn').style.display = 'none';
+    }
+
+    function checkGrammar() {
+        const userVal = document.getElementById('grammar-input').value.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
+        const targetVal = grammarData[grammarIdx].correct.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
+        const fb = document.getElementById('grammar-fb');
+
+        if (userVal === targetVal) {
+            fb.innerText = '✨ Correct! Exact sentence structure.';
+            fb.style.color = 'var(--correct)';
+            playSound('correct');
+            grammarScore++;
+        } else {
+            fb.innerText = '✕ Incorrect. Correct answer: ' + grammarData[grammarIdx].correct;
+            fb.style.color = 'var(--wrong)';
+            playSound('wrong');
+        }
+
+        document.getElementById('gram-check-btn').style.display = 'none';
+        document.getElementById('gram-next-btn').style.display = 'block';
+    }
+
+    function nextGrammar() {
+        grammarIdx++;
+        if (grammarIdx < grammarData.length) {
+            loadGrammar();
+        } else {
+            document.getElementById('gram-quiz-body').innerHTML = getFeedbackTemplate(grammarScore, grammarData.length, 'resetGrammar()');
+        }
+    }
+
+    function resetGrammar() {
+        grammarIdx = 0;
+        grammarScore = 0;
+        document.getElementById('gram-quiz-body').innerHTML = `
+            <div class="card-title"><span>Unscramble Sentences</span><span id="gram-counter">1 / 7</span></div>
+            <div class="scramble-box" id="scramble-target">loading...</div>
+            <input type="text" id="grammar-input" placeholder="Type sentence here..." autocomplete="off">
+            <div class="feedback-msg" id="grammar-fb"></div>
+            <button class="btn-action" id="gram-check-btn" onclick="checkGrammar()">Chequear Respuesta ✓</button>
+            <button class="btn-action" id="gram-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextGrammar()">Siguiente Oración ➔</button>
+        `;
+        loadGrammar();
+    }
+
+    // --- 3. VOCABULARY SECTION (PAGE 1: Weather / PAGE 2: Seasons) ---
+    const vocabPages = [
+        {
+            title: "Weather & Temperatures",
+            items: [
+                { id: 1, label: "Sunny", emoji: "☀️", correct: "sunny", opts: ["sunny", "rainy", "snowy", "windy", "hot", "cold"] },
+                { id: 2, label: "Rainy", emoji: "🌧️", correct: "rainy", opts: ["sunny", "rainy", "snowy", "windy", "hot", "cold"] },
+                { id: 3, label: "Snowy", emoji: "❄️", correct: "snowy", opts: ["sunny", "rainy", "snowy", "windy", "hot", "cold"] },
+                { id: 4, label: "Windy", emoji: "💨", correct: "windy", opts: ["sunny", "rainy", "snowy", "windy", "hot", "cold"] },
+                { id: 5, label: "Hot", emoji: "🥵", correct: "hot", opts: ["sunny", "rainy", "snowy", "windy", "hot", "cold"] },
+                { id: 6, label: "Cold", emoji: "🥶", correct: "cold", opts: ["sunny", "rainy", "snowy", "windy", "hot", "cold"] }
+            ]
+        },
+        {
+            title: "Seasons of the Year",
+            items: [
+                { id: 7, label: "Spring", emoji: "🌸", correct: "spring", opts: ["spring", "summer", "fall", "winter"] },
+                { id: 8, label: "Summer", emoji: "🏖️", correct: "summer", opts: ["spring", "summer", "fall", "winter"] },
+                { id: 9, label: "Fall / Autumn", emoji: "🍂", correct: "fall", opts: ["spring", "summer", "fall", "winter"] },
+                { id: 10, label: "Winter", emoji: "☃️", correct: "winter", opts: ["spring", "summer", "fall", "winter"] }
+            ]
+        }
+    ];
+
+    let vocabCurrentPage = 0;
+    let totalVocabScore = 0;
+
+    function loadVocabPage() {
+        const pageData = vocabPages[vocabCurrentPage];
+        document.getElementById('vocab-title').innerText = pageData.title;
+        document.getElementById('vocab-page-counter').innerText = `Page ${vocabCurrentPage + 1} / 2`;
+        
+        const container = document.getElementById('vocab-container');
+        container.innerHTML = '';
+        document.getElementById('vocab-fb').innerText = '';
+        document.getElementById('vocab-check-btn').style.display = 'block';
+        document.getElementById('vocab-next-btn').style.display = 'none';
+
+        pageData.items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'vocab-card';
+            let optionsHtml = `<option value="">Select...</option>`;
+            item.opts.forEach(o => {
+                optionsHtml += `<option value="${o}">${o.charAt(0).toUpperCase() + o.slice(1)}</option>`;
+            });
+
+            card.innerHTML = `
+                <div class="vocab-icon">${item.emoji}</div>
+                <select class="vocab-select" data-id="${item.id}">
+                    ${optionsHtml}
+                </select>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function checkVocabPage() {
+        const pageData = vocabPages[vocabCurrentPage];
+        const selects = document.querySelectorAll('#vocab-container .vocab-select');
+        let pageScore = 0;
+
+        selects.forEach(s => {
+            const id = parseInt(s.getAttribute('data-id'));
+            const item = pageData.items.find(v => v.id === id);
+            if (s.value === item.correct) {
+                s.style.borderColor = "var(--correct)";
+                pageScore++;
+            } else {
+                s.style.borderColor = "var(--wrong)";
+            }
+        });
+
+        totalVocabScore += pageScore;
+
+        if (pageScore === pageData.items.length) {
+            playSound('correct');
+            document.getElementById('vocab-fb').innerText = '✨ All answers on this page are correct!';
+            document.getElementById('vocab-fb').style.color = 'var(--correct)';
+        } else {
+            playSound('wrong');
+            document.getElementById('vocab-fb').innerText = '✕ Some choices are incorrect.';
+            document.getElementById('vocab-fb').style.color = 'var(--wrong)';
+        }
+
+        document.getElementById('vocab-check-btn').style.display = 'none';
+        document.getElementById('vocab-next-btn').style.display = 'block';
+    }
+
+    function nextVocabPage() {
+        vocabCurrentPage++;
+        if (vocabCurrentPage < vocabPages.length) {
+            loadVocabPage();
+        } else {
+            const totalItems = vocabPages[0].items.length + vocabPages[1].items.length;
+            document.getElementById('vocab-quiz-body').innerHTML = getFeedbackTemplate(totalVocabScore, totalItems, 'resetVocab()');
+        }
+    }
+
+    function resetVocab() {
+        vocabCurrentPage = 0;
+        totalVocabScore = 0;
+        document.getElementById('vocab-quiz-body').innerHTML = `
+            <div class="card-title">
+                <span id="vocab-title">Weather & Temperatures</span>
+                <span id="vocab-page-counter">Page 1 / 2</span>
+            </div>
+            <div class="vocab-grid" id="vocab-container"></div>
+            <div class="feedback-msg" id="vocab-fb"></div>
+            <button class="btn-action" id="vocab-check-btn" onclick="checkVocabPage()">Chequear Todo ✓</button>
+            <button class="btn-action" id="vocab-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextVocabPage()">Next Page ➔</button>
+        `;
+        loadVocabPage();
+    }
+
+    // --- 4. LISTENING SECTION ---
+    const listeningData = [
+        { speech: "It is raining outside today, so I am carrying an umbrella.", q: "What is the speaker carrying?", opts: ["An umbrella", "A jacket", "Sunglasses"], ans: 0 },
+        { speech: "The weather is very hot and sunny this afternoon.", q: "How is the weather described?", opts: ["Cold and windy", "Hot and sunny", "Snowy"], ans: 1 },
+        { speech: "Look at Maria! She is wearing a yellow raincoat.", q: "What is Maria wearing?", opts: ["A red hat", "A yellow raincoat", "Blue boots"], ans: 1 },
+        { speech: "In the summer, my friends like swimming in the pool.", q: "What do the friends like doing?", opts: ["Skiing", "Swimming in the pool", "Sleeping"], ans: 1 },
+        { speech: "It is freezing today, and the snow is falling softly.", q: "Which weather condition is mentioned?", opts: ["Sunny", "Windy", "Snowy"], ans: 2 },
+        { speech: "Carlos is drinking cold water because he is very hot.", q: "Why is Carlos drinking cold water?", opts: ["Because he is hot", "Because he is cold", "Because it is raining"], ans: 0 },
+        { speech: "Listen to the wind! It is very windy outside.", q: "What weather element is loud?", opts: ["The sun", "The wind", "The snow"], ans: 1 }
+    ];
+    let listenIdx = 0;
+    let listenScore = 0;
+    let selectedListenOpt = null;
+
+    function playAudio() {
+        const text = listeningData[listenIdx].speech;
+        const uttr = new SpeechSynthesisUtterance(text);
+        uttr.lang = 'en-US';
+        uttr.rate = 0.85;
+        window.speechSynthesis.speak(uttr);
+
+        document.getElementById('listen-q').innerText = `${listenIdx + 1}. ${listeningData[listenIdx].q}`;
+        const container = document.getElementById('listen-opts');
+        container.innerHTML = '';
+        selectedListenOpt = null;
+
+        listeningData[listenIdx].opts.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerHTML = `<span>${opt}</span><span class="mark"></span>`;
+            btn.onclick = () => {
+                document.querySelectorAll('#listen-opts .opt-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedListenOpt = idx;
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function checkListeningAnswer() {
+        if (selectedListenOpt === null) return;
+        const item = listeningData[listenIdx];
+        const buttons = document.querySelectorAll('#listen-opts .opt-btn');
+
+        if (selectedListenOpt === item.ans) {
+            buttons[selectedListenOpt].classList.add('correct-mark');
+            buttons[selectedListenOpt].querySelector('.mark').innerText = '✓';
+            playSound('correct');
+            listenScore++;
+            document.getElementById('listen-fb').innerText = 'Great listening comprehension!';
+            document.getElementById('listen-fb').style.color = 'var(--correct)';
+        } else {
+            buttons[selectedListenOpt].classList.add('wrong-mark');
+            buttons[selectedListenOpt].querySelector('.mark').innerText = '✕';
+            buttons[item.ans].classList.add('correct-mark');
+            buttons[item.ans].querySelector('.mark').innerText = '✓';
+            playSound('wrong');
+            document.getElementById('listen-fb').innerText = 'Incorrect option.';
+            document.getElementById('listen-fb').style.color = 'var(--wrong)';
+        }
+
+        document.getElementById('listen-check-btn').style.display = 'none';
+        document.getElementById('listen-next-btn').style.display = 'block';
+    }
+
+    function nextListening() {
+        listenIdx++;
+        if (listenIdx < listeningData.length) {
+            document.getElementById('list-counter').innerText = `${listenIdx + 1} / ${listeningData.length}`;
+            document.getElementById('listen-q').innerText = 'Click "Escuchar Audio" first...';
+            document.getElementById('listen-opts').innerHTML = '';
+            document.getElementById('listen-fb').innerText = '';
+            document.getElementById('listen-check-btn').style.display = 'block';
+            document.getElementById('listen-next-btn').style.display = 'none';
+        } else {
+            document.getElementById('listen-quiz-body').innerHTML = getFeedbackTemplate(listenScore, listeningData.length, 'resetListening()');
+        }
+    }
+
+    function resetListening() {
+        listenIdx = 0;
+        listenScore = 0;
+        document.getElementById('listen-quiz-body').innerHTML = `
+            <div class="card-title"><span>Listening Practice</span><span id="list-counter">1 / 7</span></div>
+            <button class="audio-btn" onclick="playAudio()">🔊 Escuchar Audio</button>
+            <div style="font-size: 14px; font-weight:600;" id="listen-q">Haz clic en "Escuchar Audio" primero...</div>
+            <div class="options-grid" id="listen-opts"></div>
+            <div class="feedback-msg" id="listen-fb"></div>
+            <button class="btn-action" id="listen-check-btn" onclick="checkListeningAnswer()">Chequear Respuesta ✓</button>
+            <button class="btn-action" id="listen-next-btn" style="display:none; background:#334155; color:#fff;" onclick="nextListening()">Siguiente Audio ➔</button>
+        `;
+    }
+
+    // INICIALIZACIÓN
+    loadMix();
+    loadGrammar();
+    loadVocabPage();
+</script>
+</body>
+</html>
